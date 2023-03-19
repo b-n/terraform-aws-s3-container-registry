@@ -43,9 +43,11 @@ data "aws_iam_policy_document" "allow_access_from_cloudfront" {
   }
 }
 
+// Create an empty resource at /v2/ which returns a 200. This tricks docker
+// into thinking a repository exists here.
 resource "aws_s3_object" "index" {
   bucket  = aws_s3_bucket.storage.id
-  key     = "v2/index"
+  key     = "v2/index.html"
   content = ""
 }
 
