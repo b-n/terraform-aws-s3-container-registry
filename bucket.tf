@@ -23,7 +23,8 @@ resource "aws_s3_bucket_policy" "allow_access_from_cloudfront" {
 
 data "aws_iam_policy_document" "allow_access_from_cloudfront" {
   statement {
-    sid = "AllowCloudFrontReadOnly"
+    sid    = "AllowCloudFrontReadOnly"
+    effect = "Allow"
 
     principals {
       type        = "Service"
