@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "storage" {
-  bucket = "${var.project}-containers"
+  bucket = "${var.project}-container-storage"
 }
 
 resource "aws_s3_bucket_public_access_block" "block_all" {
