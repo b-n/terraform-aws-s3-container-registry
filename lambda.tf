@@ -31,7 +31,7 @@ resource "aws_lambda_function" "at_edge" {
   function_name = "lambda"
   role          = aws_iam_role.lambda_at_edge.arn
 
-  handler = "index.handler"
+  handler = "lambda.handler"
   publish = true
 
   source_code_hash = data.archive_file.lambda.output_base64sha256
