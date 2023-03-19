@@ -45,3 +45,22 @@ resource "aws_lambda_permission" "allow_cloudfront" {
   function_name = aws_lambda_function.at_edge.function_name
   principal     = "edgelambda.amazonaws.com"
 }
+
+data "aws_iam_policy_document" "lambda_logs" {
+  statement {
+    sid       = "LambdaLogs"
+    effect    = "Allow"
+    resources = ["*"]
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "logs_role_policy" {
+  name   = "lambda-at-edge"
+  role   = aws_iam_role.lambda_at_edge.id
+  policy = data.aws_iam_policy_document.lambda_logs.json
+}
