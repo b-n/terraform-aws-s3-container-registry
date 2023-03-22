@@ -64,15 +64,40 @@ $ touch latest
 $ aws s3 cp --metadata docker-content-digest="$manifest_sha",docker-etag="$manifest_sha" latest s3://s3-docker-registry-container-storage/v2/example/manifests/latest
 ```
 
-Upload the blobs:
+Upload the Manifest (sha can be found in the `index.json` file):
 
 ```sh
-for blob in ./blobs/sha256/*
-do
-  local hash="$(basename $blob)"
-  aws s3 cp --metadata docker-content-digest=$hash,docker-etag=$hash $blob s3://s3-docker-registry-container-storage/v2/example/${blob:2}
-done
+$ export sha="0b6d1506931e6990ddb6f11a73c8851c6371b798ecd9da91668d84da0f1e559c"
+$ aws s3 cp \
+  --metadata docker-content-digest="sha256:$sha",docker-etag="sha256:$sha",Content-Type="application/vnd.docker.distribution.manifest.v2+json" \
+  ./blobs/sha256/$hash \
+  s3://s3-docker-registry-container-storage/v2/example/blobs/sha256/$sha
 ```
+
+Upload the container image config (sha is in the manifest file):
+
+```sh
+$ export sha="bffe16b6336ccce7a8764375e87bdb18b25b421ce70847f4697161144a58c685"
+$ aws s3 cp \
+  --metadata docker-content-digest="sha256:$sha",docker-etag="sha256:$sha",Content-Type="application/vnd.docker.container.image.v1+json" \
+  ./blobs/sha256/$hash \
+  s3://s3-docker-registry-container-storage/v2/example/blobs/sha256/$sha
+```
+
+Upload the rootfs layer (sha is in the manifest file):
+
+```sh
+$ export sha="63b65145d645c1250c391b2d16ebe53b3747c295ca8ba2fcb6b0cf064a4dc21c"
+$ aws s3 cp \
+  --metadata docker-content-digest="sha256:$sha",docker-etag="sha256:$sha",Content-Type="application/vnd.docker.image.rootfs.diff.tar.gzip" \
+  ./blobs/sha256/$hash \
+  s3://s3-docker-registry-container-storage/v2/example/blobs/sha256/$sha
+```
+
+👆 There are of course ways to automate this, but this is the detail of what 
+needs to be done in order to upload an image. The `Content-Type` is extremely
+important on these requests. If you get the content-type wrong, you will likely
+need to invalidate the cache on Cloudfront.
 
 ## Pull your image and use it
 
