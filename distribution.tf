@@ -46,7 +46,7 @@ resource "aws_cloudfront_function" "storage_viewer_request" {
 resource "aws_cloudfront_function" "storage_viewer_response" {
   name    = "storage_viewer_response"
   runtime = "cloudfront-js-1.0"
-  comment = "Applies Docker ETag header"
+  comment = "Applying headers from metadata"
   publish = true
   code    = file("./storage_viewer_response.js")
 }
