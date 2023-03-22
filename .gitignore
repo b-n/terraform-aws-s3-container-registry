@@ -3,4 +3,6 @@
 *.tfstate
 *.tfstate.*
 
-lambda.zip
+example/*
+!example/Dockerfile
+!example/README.md
