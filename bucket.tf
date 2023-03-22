@@ -49,5 +49,9 @@ resource "aws_s3_object" "index" {
   bucket  = aws_s3_bucket.storage.id
   key     = "v2/index.html"
   content = ""
+
+  metadata = {
+    docker-distribution-api-version = "registry/2.0"
+  }
 }
 

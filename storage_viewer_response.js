@@ -1,7 +1,7 @@
 // This is a hash map of S3 header values to map to the response header values
 var HEADER_MAPPINGS = {
   'x-amz-meta-docker-etag': 'etag',
-  'x-amz-meta-docker-distribution-api-version': 'Docker-Distribution-API-Version',
+  'x-amz-meta-docker-distribution-api-version': 'docker-distribution-api-version',
 }
 
 // This function returns a curried function which edits `response`. The curried
