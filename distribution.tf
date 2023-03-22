@@ -31,6 +31,10 @@ resource "aws_cloudfront_cache_policy" "default_cache_policy" {
   }
 }
 
+resource "aws_s3_bucket" "cloudfront_access_logs" {
+  bucket = "${var.project}-cloudfront-access-logs"
+}
+
 resource "aws_cloudfront_function" "storage_viewer_request" {
   name    = "storage_viewer_request"
   runtime = "cloudfront-js-1.0"
@@ -57,6 +61,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   enabled         = true
   is_ipv6_enabled = true
   comment         = "Distribution for containers stored in s3"
+
+  logging_config {
+    bucket          = aws_s3_bucket.cloudfront_access_logs.bucket_domain_name
+    include_cookies = false
+  }
 
   # This should match the value in storage_viewer_request.js
   default_root_object = "index.html"
