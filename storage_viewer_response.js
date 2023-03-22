@@ -2,6 +2,7 @@
 var HEADER_MAPPINGS = {
   'x-amz-meta-docker-etag': 'etag',
   'x-amz-meta-docker-distribution-api-version': 'docker-distribution-api-version',
+  'x-amz-meta-docker-content-digest': 'docker-content-digest',
 }
 
 // This function returns a curried function which edits `response`. The curried
