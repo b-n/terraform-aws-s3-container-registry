@@ -31,6 +31,14 @@ resource "aws_cloudfront_cache_policy" "default_cache_policy" {
   }
 }
 
+resource "aws_cloudfront_function" "storage_viewer_request" {
+  name    = "storage_viewer_request"
+  runtime = "cloudfront-js-1.0"
+  comment = "Rewrite requests for empty roots"
+  publish = true
+  code    = file("./storage_viewer_request.js")
+}
+
 resource "aws_cloudfront_function" "storage_viewer_response" {
   name    = "storage_viewer_response"
   runtime = "cloudfront-js-1.0"
@@ -46,10 +54,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     origin_id                = local.s3_origin_id
   }
 
-  enabled             = true
-  is_ipv6_enabled     = true
-  comment             = "Distribution for containers stored in s3"
-  default_root_object = "index"
+  enabled         = true
+  is_ipv6_enabled = true
+  comment         = "Distribution for containers stored in s3"
+
+  # This should match the value in storage_viewer_request.js
+  default_root_object = "index.html"
 
   default_cache_behavior {
     allowed_methods = ["GET", "HEAD"]
@@ -66,10 +76,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    lambda_function_association {
-      event_type   = "origin-request"
-      lambda_arn   = aws_lambda_function.at_edge.qualified_arn
-      include_body = false
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.storage_viewer_request.arn
     }
 
     function_association {
