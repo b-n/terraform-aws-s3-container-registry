@@ -38,7 +38,7 @@ resource "aws_s3_bucket" "cloudfront_access_logs" {
 resource "aws_cloudfront_function" "storage_viewer_request" {
   name    = "storage_viewer_request"
   runtime = "cloudfront-js-1.0"
-  comment = "Rewrite requests for empty roots"
+  comment = "Rewriting client requests"
   publish = true
   code    = file("./storage_viewer_request.js")
 }
