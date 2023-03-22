@@ -31,6 +31,14 @@ resource "aws_cloudfront_cache_policy" "default_cache_policy" {
   }
 }
 
+resource "aws_cloudfront_function" "storage_viewer_response" {
+  name    = "storage_viewer_response"
+  runtime = "cloudfront-js-1.0"
+  comment = "Applies Docker ETag header"
+  publish = true
+  code    = file("./storage_viewer_response.js")
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.storage.bucket_regional_domain_name
@@ -62,6 +70,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       event_type   = "origin-request"
       lambda_arn   = aws_lambda_function.at_edge.qualified_arn
       include_body = false
+    }
+
+    function_association {
+      event_type   = "viewer-response"
+      function_arn = aws_cloudfront_function.storage_viewer_response.arn
     }
   }
 
