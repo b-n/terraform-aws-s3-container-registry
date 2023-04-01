@@ -1,8 +1,8 @@
-.terraform/
+**/.terraform/
 
-*.tfstate
-*.tfstate.*
+**/*.tfstate
+**/*.tfstate.*
 
-example/*
-!example/Dockerfile
-!example/README.md
+example-upload-container/*
+!example-upload-container/Dockerfile
+!example-upload-container/README.md
